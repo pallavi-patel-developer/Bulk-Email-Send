@@ -32,10 +32,9 @@ function guessSalonName(email, campaign) {
 }
 
 async function startBulkSend() {
-    console.log('🚀 Starting Bulk Email Campaign...');
     
     if (!fs.existsSync(CSV_PATH)) {
-        console.error(`❌ CSV file not found at: ${CSV_PATH}`);
+        console.error(``);
         return;
     }
 
@@ -45,7 +44,6 @@ async function startBulkSend() {
         skip_empty_lines: true
     });
 
-    console.log(`📋 Found ${records.length} potential leads.`);
     
     for (let i = 0; i < records.length; i++) {
         const record = records[i];
@@ -57,7 +55,6 @@ async function startBulkSend() {
         const salonName = guessSalonName(email, campaign);
         const pitchMessage = "I've been working on a new AI-powered booking automation specifically designed for modern salons. I'd love to show you how it could save you time and improve client retention.";
         
-        console.log(`\n[${i + 1}/${records.length}] Sending to: ${salonName} (${email})...`);
 
         const mailOptions = {
             from: `"Pallavi Patel" <${process.env.EMAIL_USER}>`,
@@ -68,9 +65,8 @@ async function startBulkSend() {
 
         try {
             await transporter.sendMail(mailOptions);
-            console.log(`✅ Sent successfully!`);
         } catch (error) {
-            console.error(`❌ Failed to send to ${email}:`, error.message);
+            console.error(``);
         }
 
         if (i < records.length - 1) {
@@ -79,7 +75,6 @@ async function startBulkSend() {
         }
     }
 
-    console.log('\n✨ Bulk campaign complete!');
 }
 
 startBulkSend().catch(console.error);

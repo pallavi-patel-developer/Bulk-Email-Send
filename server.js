@@ -122,7 +122,7 @@ const createEmailTemplate = (name, message) => {
     <body>
         <div class="container">
             <div class="header-banner">
-                <h1>Elegant Bulk Email Portal</h1>
+                <h1>PALLAVI PATEL | AI FULLSTACK DEVELOPER</h1>
             </div>
             <div class="content">
                 <h2>Hi ${name} Team,</h2>
@@ -170,10 +170,9 @@ app.post('/send-email', (req, res) => {
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.error('Error sending email:', error);
+            console.error('');
             return res.status(500).json({ error: 'Failed to send email' });
         }
-        console.log('Email sent successfully:', info.response);
         res.status(200).json({ message: 'Email sent successfully' });
     });
 });
