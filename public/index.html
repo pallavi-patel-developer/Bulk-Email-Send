@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Email Portal | Pallavi Patel</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    
+    <div class="glass-container">
+        <header>
+            <h1>Pallavi <span>Patel</span></h1>
+            <p>AI Full Stack Developer</p>
+            <div class="tabs">
+                <button type="button" class="tab-btn active" onclick="switchMode('single')">Single Email</button>
+                <button type="button" class="tab-btn" onclick="switchMode('bulk')">Bulk Campaign</button>
+            </div>
+            <a href="https://salon-eight-rho.vercel.app/" target="_blank">Visit Portfolio Website &rarr;</a>
+        </header>
+
+        <!-- Single Email Form -->
+        <form id="emailForm">
+            <div id="singleFields">
+                <div class="input-group">
+                    <label for="name">Recipient Name</label>
+                    <input type="text" id="name" placeholder="John Doe" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="to">Recipient Email</label>
+                    <input type="email" id="to" placeholder="recipient@example.com" required>
+                </div>
+            </div>
+
+            <!-- Bulk Email Fields -->
+            <div id="bulkFields" style="display: none;">
+                <div class="input-group csv-upload">
+                    <label>Upload Salon Lead List (CSV)</label>
+                    <div class="file-drop-zone" id="dropZone">
+                        <input type="file" id="csvFile" accept=".csv" style="display: none;">
+                        <span id="fileLabel">Drop CSV file here or click to browse</span>
+                    </div>
+                    <div id="recipientCount" class="count-badge" style="display: none;">0 Recipients Found</div>
+                </div>
+                
+                <div id="recipientPreview" class="preview-list" style="display: none;">
+                    <!-- Recipient items injected here -->
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" placeholder="Important Update" required name="subject">
+            </div>
+
+            <div class="input-group">
+                <label for="message">Message Content</label>
+                <textarea id="message" rows="5" placeholder="Enter your message here..." required name="message"></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                <span class="btn-text">Send Email</span>
+                <span class="loader"></span>
+            </button>
+        </form>
+
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script>
+        let currentMode = 'single';
+        let recipients = [];
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(mode));
+            });
+            document.getElementById('singleFields').style.display = mode === 'single' ? 'block' : 'none';
+            document.getElementById('bulkFields').style.display = mode === 'bulk' ? 'block' : 'none';
+            document.getElementById('to').required = mode === 'single';
+            document.getElementById('name').required = mode === 'single';
+            
+            const submitBtnText = document.querySelector('.btn-text');
+            submitBtnText.textContent = mode === 'single' ? 'Send Email' : 'Launch Bulk Campaign';
+            
+            document.getElementById('statusMessage').style.display = 'none';
+        }
+
+        // CSV Parsing Logic
+        const csvFileInput = document.getElementById('csvFile');
+        const dropZone = document.getElementById('dropZone');
+
+        if (dropZone) {
+            dropZone.onclick = () => csvFileInput.click();
+        }
+
+        if (csvFileInput) {
+            csvFileInput.onchange = (e) => handleFiles(e.target.files);
+        }
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            const file = files[0];
+            document.getElementById('fileLabel').textContent = file.name;
+
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    processCSV(results.data);
+                }
+            });
+        }
+
+        function guessSalonName(email, campaign) {
+            if (campaign && campaign.trim() && campaign.toLowerCase() !== 'salon' && !campaign.includes('"')) {
+                return campaign.trim();
+            }
+            const namePart = email.split('@')[0];
+            return namePart
+                .split(/[.\-_]/)
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        function processCSV(data) {
+            recipients = data.map(row => {
+                const email = row.Email || row.email || row.EMAIL;
+                const campaign = row['Campaign Name'] || row.campaign || '';
+                if (!email) return null;
+                return {
+                    email: email.trim(),
+                    name: guessSalonName(email.trim(), campaign)
+                };
+            }).filter(r => r !== null);
+
+            renderRecipients();
+        }
+
+        function updateRecipientName(index, newName) {
+            if (recipients[index]) {
+                recipients[index].name = newName;
+            }
+        }
+
+        function removeRecipient(index) {
+            recipients.splice(index, 1);
+            renderRecipients();
+        }
+
+        function renderRecipients() {
+            const preview = document.getElementById('recipientPreview');
+            const countBadge = document.getElementById('recipientCount');
+            
+            if (recipients.length === 0) {
+                preview.style.display = 'none';
+                countBadge.style.display = 'none';
+                return;
+            }
+
+            preview.innerHTML = '';
+            recipients.forEach((r, index) => {
+                const item = document.createElement('div');
+                item.className = 'recipient-item';
+                item.id = `recipient-${index}`;
+                item.innerHTML = `
+                    <div class="recipient-info">
+                        <input type="text" value="${r.name}" oninput="updateRecipientName(${index}, this.value)" class="edit-name-input">
+                        <span>${r.email}</span>
+                    </div>
+                    <div class="recipient-actions">
+                        <button type="button" class="remove-btn" onclick="removeRecipient(${index})" title="Remove">×</button>
+                        <div class="recipient-status">Ready</div>
+                    </div>
+                `;
+                preview.appendChild(item);
+            });
+
+            preview.style.display = 'block';
+            countBadge.textContent = `${recipients.length} Recipients Found`;
+            countBadge.style.display = 'inline-block';
+        }
+
+        document.getElementById('emailForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            if (currentMode === 'bulk' && recipients.length === 0) {
+                alert('Please upload a valid CSV first');
+                return;
+            }
+
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            statusMessage.style.display = 'none';
+
+            if (currentMode === 'single') {
+                const to = document.getElementById('to').value;
+                const name = document.getElementById('name').value;
+                await sendOne(to, name, subject, message, statusMessage);
+            } else {
+                await sendBulk(subject, message, statusMessage);
+            }
+
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+        });
+
+        async function sendOne(to, name, subject, message, statusMsg) {
+            try {
+                const response = await fetch('/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ to, name, subject, message })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusMsg.className = 'status-message success';
+                    statusMsg.textContent = '✨ Message delivered elegantly!';
+                } else {
+                    statusMsg.className = 'status-message error';
+                    statusMsg.textContent = `❌ Error: ${data.error}`;
+                }
+            } catch (err) {
+                statusMsg.className = 'status-message error';
+                statusMsg.textContent = '❌ Server connection error.';
+            }
+            statusMsg.style.display = 'block';
+        }
+
+        async function sendBulk(subject, message, statusMsg) {
+            let successCount = 0;
+            let failCount = 0;
+
+            for (let i = 0; i < recipients.length; i++) {
+                const r = recipients[i];
+                const item = document.getElementById(`recipient-${i}`);
+                const statusLabel = item.querySelector('.recipient-status');
+                
+                statusLabel.textContent = 'Sending...';
+                statusLabel.className = 'recipient-status sending';
+
+                try {
+                    const response = await fetch('/send-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ to: r.email, name: r.name, subject, message })
+                    });
+
+                    if (response.ok) {
+                        statusLabel.textContent = 'Sent';
+                        statusLabel.className = 'recipient-status success';
+                        successCount++;
+                    } else {
+                        statusLabel.textContent = 'Failed';
+                        statusLabel.className = 'recipient-status error';
+                        failCount++;
+                    }
+                } catch (err) {
+                    statusLabel.textContent = 'Error';
+                    statusLabel.className = 'recipient-status error';
+                    failCount++;
+                }
+
+                if (i < recipients.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+
+            statusMsg.className = 'status-message success';
+            statusMsg.textContent = `✅ Campaign Complete! ${successCount} sent, ${failCount} failed.`;
+            statusMsg.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
