@@ -122,8 +122,7 @@ const createEmailTemplate = (name, message) => {
     <body>
         <div class="container">
             <div class="header-banner">
-                <h1>PALLAVI PATEL</h1>
-                <p>AI Full Stack Developer</p>
+                <h1>Elegant Bulk Email Portal</h1>
             </div>
             <div class="content">
                 <h2>Hi ${name} Team,</h2>

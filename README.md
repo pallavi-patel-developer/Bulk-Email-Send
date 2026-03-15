@@ -1,40 +1,74 @@
-# Pallavi Patel | Elegant Email Portal
+# 🪶 Elegant Bulk Email Portal
+### PALLAVI PATEL | AI BACKEND DEVELOPER
 
-A premium Node.js application for **PALLAVI PATEL** (AI Full Stack Developer) to send professional emails with an elegant brown and white theme.
+[![Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge&color=4A3728)](https://github.com/pallavi-patel-developer/Bulk-Email-Send)
+[![Theme](https://img.shields.io/badge/Theme-Brown%20%26%20Gold-gold?style=for-the-badge&color=C19A6B)](https://github.com/pallavi-patel-developer/Bulk-Email-Send)
 
-**Portfolio:** [salon-eight-rho.vercel.app](https://salon-eight-rho.vercel.app/)
+Welcome to the **Premium Email Outreach Portal**. This system is designed for elite professionals who demand both aesthetic excellence and extreme functional efficiency. 
 
-## Getting Started
+---
 
-1.  **Configure Credentials**:
-    -   Rename `.env.example` to `.env`.
-    -   Enter your Gmail address in `EMAIL_USER`.
-    -   Enter your Gmail App Password in `EMAIL_PASS`.
+## 📸 System Glimpses
 
-2.  **Start the Server**:
-    ```bash
-    node server.js
-    ```
+<table border="0">
+  <tr>
+    <td width="33%"><img src="public/image.png" alt="Portal Glimpse 1" width="100%"></td>
+    <td width="33%"><img src="public/image copy.png" alt="Portal Glimpse 2" width="100%"></td>
+    <td width="33%"><img src="public/image copy 2.png" alt="Portal Glimpse 3" width="100%"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Single Outreach</b></td>
+    <td align="center"><b>Bulk Campaign</b></td>
+    <td align="center"><b>CSV Management</b></td>
+  </tr>
+</table>
 
-3.  **Access the Application**:
-    -   Open your browser and navigate to `http://localhost:3000`.
+---
 
-## Features
--   **Elegant UI**: Reverted to the hallmark brown and white palette with gold accents.
--   **CSS Branding**: Professional email header implemented using high-end CSS.
--   **Website Integration**: Direct links to your portfolio in both the portal and emails.
--   **Bulk Sender**: Automate outreach using your `emails.csv` lead list.
+##  Features
 
-## Bulk Email Sending
+- **Luxury Aesthetic**: A curated Brown and White palette with Gold accents for a premium professional feel.
+- **Bulk Automation**: Send 40+ personalized emails in seconds using integrated CSV parsing.
+- **Real-time Editing**: Refine salon names and prune lead lists directly in the dashboard before launching.
+- **Smart Tracking**: Live status updates for every email sent, tracking successes and errors in real-time.
+- **Project Safety**: Pre-configured protection for environment variables and dependencies.
 
-To reach out to multiple salons at once using your desktop `emails.csv` list:
+---
 
-```bash
-node bulk-send.js
-```
-The script will process each lead, personalize the salon name, and send your pitch with a 3-second delay between emails.
+## 🛠️ Technology Stack
 
-## Project Structure
--   `server.js`: Express server with Nodemailer configuration.
--   `public/`: Contains the frontend assets (`index.html`, `style.css`).
--   `.env`: Sensitive credential storage.
+- **Backend**: Node.js & Express
+- **Outreach**: Nodemailer (Gmail Secure Authentication)
+- **Frontend**: Vanilla JS, HTML5, CSS3 (Glassmorphism)
+- **Data**: PapaParse (High-speed CSV Processing)
+
+---
+
+##  Quick Start
+
+1. **Clone & Install**:
+   ```bash
+   git clone https://github.com/pallavi-patel-developer/Bulk-Email-Send.git
+   npm install
+   ```
+
+2. **Configure Environment**:
+   Create a `.env` file with your credentials:
+   ```env
+   EMAIL_USER=your-email@gmail.com
+   EMAIL_PASS=your-app-password
+   ```
+
+3. **Launch**:
+   ```bash
+   node server.js
+   ```
+
+---
+
+##  Contact & Portfolio
+Designed and Developed by **Pallavi Patel**.  
+[Visit Full Portfolio](https://salon-eight-rho.vercel.app/)
+
+---
+<p align="center">© 2026 Elegant Bulk Email Portal | Crafted for Excellence</p>
