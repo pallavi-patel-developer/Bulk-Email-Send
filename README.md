@@ -8,7 +8,7 @@ Welcome to the **Premium Email Outreach Portal**. This system is designed for el
 
 ---
 
-## 📸 System Glimpses
+##  System Glimpses
 
 <table border="0">
   <tr>
@@ -35,7 +35,7 @@ Welcome to the **Premium Email Outreach Portal**. This system is designed for el
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Backend**: Node.js & Express
 - **Outreach**: Nodemailer (Gmail Secure Authentication)
