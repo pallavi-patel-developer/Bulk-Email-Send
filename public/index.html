@@ -14,7 +14,8 @@
         <div class="blob blob-2"></div>
     </div>
     
-    <div class="glass-container">
+    <div class="main-layout">
+        <div class="glass-container form-container">
         <header>
             <h1>Elegant Bulk <span>Email Portal</span></h1>
             <!-- <p>AI Full Stack Developer</p> -->
@@ -72,11 +73,87 @@
         </form>
 
         <div id="statusMessage" class="status-message"></div>
+        </div>
+        
+        <div class="glass-container template-container">
+            <h2>Choose Template</h2>
+            <div class="template-grid">
+                <div class="template-card active" onclick="selectTemplate('professional')">
+                    <div class="template-preview professional-preview">
+                        <div class="tp-header"></div>
+                        <div class="tp-body">
+                            <div class="tp-line"></div>
+                            <div class="tp-line short"></div>
+                            <div class="tp-box"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Professional</h3>
+                        <p style="font-size: 0.8rem; color: #8D7765; margin-top: 4px;">Classic & Elegant</p>
+                    </div>
+                </div>
+                
+                <div class="template-card" onclick="selectTemplate('modern')">
+                    <div class="template-preview modern-preview">
+                        <div class="tp-circle"></div>
+                        <div class="tp-body">
+                            <div class="tp-line center"></div>
+                            <div class="tp-line short center"></div>
+                            <div class="tp-btn center"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Modern Minimal</h3>
+                        <p style="font-size: 0.8rem; color: #8D7765; margin-top: 4px;">Clean & Direct</p>
+                    </div>
+                </div>
+                
+                <div class="template-card" onclick="selectTemplate('creative')">
+                    <div class="template-preview creative-preview">
+                        <div class="tp-header gradient"></div>
+                        <div class="tp-body">
+                            <div class="tp-line"></div>
+                            <div class="tp-box accent"></div>
+                            <div class="tp-btn right"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Creative Vibrant</h3>
+                        <p style="font-size: 0.8rem; color: #8D7765; margin-top: 4px;">Dynamic & Bold</p>
+                    </div>
+                </div>
+                <div class="template-card" onclick="selectTemplate('lawyer')">
+                    <div class="template-preview lawyer-preview">
+                        <div class="tp-header solid"></div>
+                        <div class="tp-body">
+                            <div class="tp-line"></div>
+                            <div class="tp-box serif"></div>
+                            <div class="tp-line center"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Lawyer / Legal</h3>
+                        <p style="font-size: 0.8rem; color: #8D7765; margin-top: 4px;">Formal & Trustworthy</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         let currentMode = 'single';
         let recipients = [];
+        let selectedTemplate = 'professional';
+
+        function selectTemplate(templateId) {
+            selectedTemplate = templateId;
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('active');
+                if (card.getAttribute('onclick') && card.getAttribute('onclick').includes("'" + templateId + "'")) {
+                    card.classList.add('active');
+                }
+            });
+        }
 
         function switchMode(mode) {
             currentMode = mode;
@@ -135,10 +212,13 @@
             recipients = data.map(row => {
                 const email = row.Email || row.email || row.EMAIL;
                 const campaign = row['Campaign Name'] || row.campaign || '';
+                const exactName = row.Name || row.name || row.NAME || row['First Name'] || '';
+                
                 if (!email) return null;
+                
                 return {
                     email: email.trim(),
-                    name: guessSalonName(email.trim(), campaign)
+                    name: exactName ? exactName.trim() : guessSalonName(email.trim(), campaign)
                 };
             }).filter(r => r !== null);
 
@@ -223,7 +303,7 @@
                 const response = await fetch('/send-email', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ to, name, subject, message })
+                    body: JSON.stringify({ to, name, subject, message, templateId: selectedTemplate })
                 });
 
                 const data = await response.json();
@@ -258,7 +338,7 @@
                     const response = await fetch('/send-email', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ to: r.email, name: r.name, subject, message })
+                        body: JSON.stringify({ to: r.email, name: r.name, subject, message, templateId: selectedTemplate })
                     });
 
                     if (response.ok) {
