@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"node server.js",
+    "start": "node server.js",
     "build": "echo build complete"
   },
   "keywords": [],
@@ -17,6 +17,7 @@
     "csv-parse": "^6.1.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "multer": "^2.2.0",
     "nodemailer": "^8.0.2"
   }
 }
